@@ -215,7 +215,7 @@ export default function BuyDataScreen() {
     }
   };
 
-  // ── PURCHASE ──────────────────────────────────────────────────────────────
+  // ── PURCHASE ──────────────────────────────────────────────────────────[...]
 
   const handlePurchase =
     async () => {
@@ -239,8 +239,12 @@ export default function BuyDataScreen() {
         return;
       }
 
+      // Normalize phone by trimming whitespace
+      const normalizedPhone =
+        phone.trim();
+
       if (
-        !isValidNigerianNumber(phone)
+        !isValidNigerianNumber(normalizedPhone)
       ) {
         toast.error(
           'Please enter a valid Nigerian phone number.',
@@ -269,7 +273,8 @@ export default function BuyDataScreen() {
           await purchaseData({
             network:
               selectedNetwork.id,
-            phone,
+            phone:
+              normalizedPhone,
             planCode:
               plan.DataPlan,
             planName:
@@ -647,7 +652,7 @@ export default function BuyDataScreen() {
                                   p.cashback_amount,
                                 ) >
                                   0 && (
-                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/15 border border-green-500/25 text-green-600 text-[10px] font-bold leading-none">
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-green-500/15 border border-green-500/25 text-green-600 text-[10px] font-bold leading-tight">
                                     <Gift className="w-2.5 h-2.5" />
 
                                     ₦
@@ -676,9 +681,13 @@ export default function BuyDataScreen() {
       </div>
 
       {/* Step 4 — Confirm panel above BottomNav */}
+      {/* FIXED: Add phone validation check to prevent Step 4 from showing with invalid/empty phone */}
 
       {step >= 4 &&
-        plan && (
+        plan &&
+        isValidNigerianNumber(
+          phone,
+        ) && (
           <motion.div
             initial={{
               y: 100,
