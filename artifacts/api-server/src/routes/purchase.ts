@@ -1358,7 +1358,7 @@ router.post(
 );
 
 /* ─────────────────────────────────────────────────────────────
-   DATA PURCHASE
+   DATA PURCHASE — FIXED WITH BETTER PHONE VALIDATION
 ───────────────────────────────────────────────────────────── */
 
 router.post(
@@ -1379,10 +1379,18 @@ router.post(
       planPrice?: string;
     };
 
-    if (!network || !phone || !planCode || !planPrice) {
+    // FIXED: Check for empty phone first with specific error message
+    if (!phone) {
+      res.status(400).json({
+        error: 'Phone number is required.',
+      });
+      return;
+    }
+
+    if (!network || !planCode || !planPrice) {
       res.status(400).json({
         error:
-          'network, phone, planCode, and planPrice are required.',
+          'network, planCode, and planPrice are required.',
       });
       return;
     }
